@@ -4,7 +4,7 @@
     "description": "在 RSS 文章导入数据库之前进行质量过滤——支持长度、关键字、正则、URL、Feed、作者等多维度过滤",
     "author": "Nemo Chan",
     "type": "system",
-    "entrypoint": "FreshRSS_QualityFilter",
+    "entrypoint": "FreshRSS_QualityFilter_",
     "compatibility": {
         "freshRSS": ">=1.29.0"
     },
