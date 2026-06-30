@@ -86,7 +86,7 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
         $this->registerHook('entry_before_insert', 'hookEntryBeforeInsert');
 
         // 注册配置页面
-        if (file_exists(__DIR__ . '/configure.php')) {
+        if (file_exists(__DIR__ . '/configure.phtml')) {
             $this->registerHook('check_url_before_add', 'dummyHook'); // 占位，确保 configure 可用
         }
     }
