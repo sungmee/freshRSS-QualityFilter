@@ -134,8 +134,8 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
     public function install(): bool
     {
         foreach (self::DEFAULT_CONFIG as $key => $value) {
-            if ($this->getSystemConf($key) === null) {
-                $this->saveSystemConf($key, $value);
+            if ($this->getUserConfigurationValue($key) === null) {
+                $this->setUserConfigurationValue($key, $value);
             }
         }
 
@@ -147,10 +147,7 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
      */
     public function uninstall(): bool
     {
-        foreach (array_keys(self::DEFAULT_CONFIG) as $key) {
-            $this->removeSystemConf($key);
-        }
-
+        $this->removeUserConfiguration();
         return true;
     }
 
@@ -166,40 +163,40 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
         }
 
         // 基本设置
-        $this->saveSystemConf('enabled', (bool) Minz_Request::param('quality_enabled', false));
-        $this->saveSystemConf('min_content_length', (int) Minz_Request::param('quality_min_content_length', '200'));
-        $this->saveSystemConf('min_title_length', (int) Minz_Request::param('quality_min_title_length', '0'));
-        $this->saveSystemConf('action', Minz_Request::param('quality_action', 'skip'));
-        $this->saveSystemConf('debug', (bool) Minz_Request::param('quality_debug', false));
+        $this->setUserConfigurationValue('enabled', (bool) Minz_Request::param('quality_enabled', false));
+        $this->setUserConfigurationValue('min_content_length', (int) Minz_Request::param('quality_min_content_length', '200'));
+        $this->setUserConfigurationValue('min_title_length', (int) Minz_Request::param('quality_min_title_length', '0'));
+        $this->setUserConfigurationValue('action', Minz_Request::param('quality_action', 'skip'));
+        $this->setUserConfigurationValue('debug', (bool) Minz_Request::param('quality_debug', false));
 
         // 关键字设置
-        $this->saveSystemConf('title_keywords', Utils::parseMultiline(
+        $this->setUserConfigurationValue('title_keywords', Utils::parseMultiline(
             Minz_Request::param('quality_title_keywords', '')
         ));
-        $this->saveSystemConf('content_keywords', Utils::parseMultiline(
+        $this->setUserConfigurationValue('content_keywords', Utils::parseMultiline(
             Minz_Request::param('quality_content_keywords', '')
         ));
-        $this->saveSystemConf('keyword_match_mode', Minz_Request::param('quality_keyword_match_mode', 'contains'));
+        $this->setUserConfigurationValue('keyword_match_mode', Minz_Request::param('quality_keyword_match_mode', 'contains'));
 
         // URL / 作者 / Feed 设置
-        $this->saveSystemConf('url_blacklist', Utils::parseMultiline(
+        $this->setUserConfigurationValue('url_blacklist', Utils::parseMultiline(
             Minz_Request::param('quality_url_blacklist', '')
         ));
-        $this->saveSystemConf('author_blacklist', Utils::parseMultiline(
+        $this->setUserConfigurationValue('author_blacklist', Utils::parseMultiline(
             Minz_Request::param('quality_author_blacklist', '')
         ));
-        $this->saveSystemConf('feed_whitelist', Utils::parseMultiline(
+        $this->setUserConfigurationValue('feed_whitelist', Utils::parseMultiline(
             Minz_Request::param('quality_feed_whitelist', '')
         ));
-        $this->saveSystemConf('feed_blacklist', Utils::parseMultiline(
+        $this->setUserConfigurationValue('feed_blacklist', Utils::parseMultiline(
             Minz_Request::param('quality_feed_blacklist', '')
         ));
 
         // 正则设置
-        $this->saveSystemConf('regex_rules', Utils::parseMultiline(
+        $this->setUserConfigurationValue('regex_rules', Utils::parseMultiline(
             Minz_Request::param('quality_regex_rules', '')
         ));
-        $this->saveSystemConf('regex_scope', Minz_Request::param('quality_regex_scope', 'all'));
+        $this->setUserConfigurationValue('regex_scope', Minz_Request::param('quality_regex_scope', 'all'));
 
         // 重新初始化（应用新配置）
         $this->init();
@@ -217,7 +214,7 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
     {
         $config = [];
         foreach (self::DEFAULT_CONFIG as $key => $default) {
-            $value = $this->getSystemConf($key);
+            $value = $this->getUserConfigurationValue($key);
             $config[$key] = ($value !== null) ? $value : $default;
         }
 
@@ -266,7 +263,7 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
      */
     private function getConfiguredAction(): string
     {
-        return $this->getSystemConf('action') ?? self::DEFAULT_CONFIG['action'];
+        return $this->getUserConfigurationValue('action') ?? self::DEFAULT_CONFIG['action'];
     }
 
     /**
