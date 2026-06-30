@@ -67,6 +67,9 @@ final class FreshRSS_QualityFilter_Extension extends Minz_Extension
      */
     public function init(): void
     {
+        // 注册翻译文件（必须在加载配置页面之前调用）
+        $this->registerTranslates();
+
         // 加载配置
         $config = $this->loadConfig();
 
